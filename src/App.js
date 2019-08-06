@@ -1,12 +1,16 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { list } from 'postcss';
 
+import { 
+  Title, 
+  Input,
+  ContactWrapper
+} from './components';
 
 class App extends React.Component {
   
   state = {
+    title: '',
     isEditMode: -1,
     name: '',
     phone: '',
@@ -86,6 +90,20 @@ class App extends React.Component {
     newContact[index][event.target.name] = event.target.value; 
     this.setState({contact: newContact});
   }
+
+  /**
+   * 
+   */
+  _handleChangeTitle = (title) => {
+    this.setState({title})
+  }
+
+  /**
+   * 
+   */
+  _hanldeClickEvent = (value) => {
+    alert(value)
+  }
   
   /**
    * 뷰
@@ -101,6 +119,12 @@ class App extends React.Component {
     return (
       <div className="App">
         <div>
+          <button onClick={()=>this._handleChangeTitle('Home')}>/home</button>
+          <button onClick={()=>this._handleChangeTitle('About')}>/about</button>
+          <button onClick={()=>this._handleChangeTitle('Blog')}>/blog</button>
+          <br/>
+          <Title value={this.state.title} onClick={this._hanldeClickEvent} />
+
           <table border="1">
             <thead>
               <tr>
@@ -111,36 +135,35 @@ class App extends React.Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
+              {/* <tr>
                 <td><input value={name} name="name" onChange={(event)=>this._handleChangeState('name', event.target.value)} placeholder="name" /></td>
                 <td><input value={phone} name="phone" onChange={(event)=>this._handleChangeState('phone', event.target.value)} placeholder="phone" /></td>
                 <td colSpan="2">
                   <button onClick={()=> this._handleCreateContact()}>New</button>
                 </td>
+              </tr> */}
+              <tr>
+                <td>
+                  <Input 
+                    type="text" 
+                    name="name"
+                    placeholder="Name" 
+                    onChange={(e)=>this._handleChangeState(e.name, e.value)} 
+                  />
+                </td>
+                <td><input value={phone} name="phone" onChange={(event)=>this._handleChangeState('phone', event.target.value)} placeholder="phone" /></td>
+                <td colSpan="2">
+                  <button onClick={()=> this._handleCreateContact()}>New</button>
+                </td>
               </tr>
-              {
-                data.map((item, index) => (
-                  <tr key={index.toString()}>
-                    {(isEditMode > -1 && isEditMode === item.id) ? (
-                      <>
-                        <td><input name="name" value={item.name} onChange={(event) => this._handleChangeContact(index, event)} /></td>
-                        <td><input name="phone" value={item.phone} onChange={(event) => this._handleChangeContact(index, event)} /></td>
-                      </>
-                    ) : (
-                      <>
-                        <td>{item.name}</td>
-                        <td>{item.phone}</td>
-                      </>
-                    )}
-                    <td>
-                      <button onClick={()=>this._handleToggleEditMode(item.id)}>Edit</button>
-                    </td>
-                    <td>
-                      <button onClick={()=>this._handleRemoveContact(item.id)}>Delete</button>
-                    </td>
-                  </tr>
-                ))
-              }
+
+              <ContactWrapper 
+                data={data} 
+                isEditMode={this.state.isEditMode}  
+                onChange={this._handleChangeContact}
+                onToggleEditMode={this._handleToggleEditMode}
+                onRemoveContact={this._handleRemoveContact}
+              />
 
             </tbody>
           </table>
